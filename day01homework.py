@@ -11,5 +11,5 @@ print(ls)
 model = KNeighborsRegressor(n_neighbors=5)
 
 X_new = [[31721.3]]  # ROK 2020
-model.fit(X_new, X, y)
-print(model.predict())
+model.fit(X, y)
+print(model.predict(X_new))
