@@ -13,6 +13,7 @@ df = pd.DataFrame(
     }
 )
 
-df_filled = df.fillna(df.mean()) #fillna : dataframe에서 NaN으로 채워진 값을 다른 값으로 채워넣는 메서드
 
-print(df_filled)
+df[['A','B']] = df[['A','B']].fillna(df.mean())
+
+print(df)
