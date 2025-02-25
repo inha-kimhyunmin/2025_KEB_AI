@@ -14,6 +14,7 @@ df = pd.DataFrame(
 )
 
 
-df[['A','B']] = df[['A','B']].fillna(df.mean())
+i = SimpleImputer(strategy='mean')
+df[['A', 'B']] = i.fit_transform(df[['A', 'B']])
 
 print(df)
