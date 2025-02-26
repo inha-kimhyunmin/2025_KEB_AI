@@ -1,20 +1,12 @@
-# v0.9) v0.8파일의 결측치 값을 산술평균으로 채워 넣는 다양한 방법을 적용하시오.
-
-import numpy as np
 import pandas as pd
-import seaborn as sns
-from sklearn.impute import SimpleImputer
 
-df = pd.DataFrame(
-    {
-        'A':[1, 2, np.nan, 4], #1열
-        'B':[np.nan, 12, 3, 4], #2열
-        'C':[1, 2, 3, 4] #3열
-    }
-)
+data = [1, 7, 5, 2, 8, 3, 6, 4]
 
+bins = [0, 3, 6, 9]
 
-i = SimpleImputer(strategy='mean')
-df[['A', 'B']] = i.fit_transform(df[['A', 'B']])
+labels = ["low", "mid", "high"]
 
-print(df)
+#0 ~ 3 low 4 ~ 6 mid 7 ~ 9 high
+#매개변수를 순서대로 집어넣던가, 키워드 매개변수로 원하는대로 집어넣는것도 가능
+cat = pd.cut(data, bins, True, labels) #False하면 3이 mid, 6이  high가 된다.
+print(cat)
