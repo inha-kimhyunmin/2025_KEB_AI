@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from pandas.plotting import scatter_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
+from sklearn.impute import SimpleImputer
 
 #데이터 로딩 -> 데이터 전처리 -> 타겟 및 독립변수 설정 -> 트레이닝/테스트 셋 설정 -> 모델 설정 및 학습
 # -> 예측 수행 -> 성능 평가 -> 시각화
@@ -18,6 +19,9 @@ from sklearn.linear_model import LinearRegression
 mpg = sns.load_dataset('mpg')
 print(mpg)
 print(mpg.info())
+
+i = SimpleImputer(strategy='median')
+mpg[['horsepower']] = i.fit_transform(mpg[['horsepower']]) #결측치 제거
 
 #mpg는 타겟(예측하는 데이터) 실제 측정결과는 정답지가 되겠죠
 #일단 object 데이터는 제거, 그리고 결측치 제거
@@ -38,7 +42,7 @@ for i, col in enumerate(num_cols, 1):
 plt.tight_layout()
 plt.show()
 
-x = mpg[['displacement']]
+x = mpg[['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'model_year']]
 y = mpg[['mpg']]
 
 #훈련 세트, 테스트 세트 분리
@@ -46,14 +50,13 @@ X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=0.2, random_
 
 model = LinearRegression()
 model.fit(X_train, Y_train)
+y_pred = model.predict(X_test)
 
-#직선 공간 생성, X_test의 가장 작은 값부터 가장 큰값까지, 100개의 구간으로 나눔 -> reshape를 통해 2차원 배열로 변환
-X_range = np.linspace(X_test["displacement"].min(), X_test["displacement"].max(), 100).reshape(-1,1)
-y_pred = model.predict(X_range)
-
-plt.plot(X_range, y_pred, color = 'red', label = 'displacement : mpg model test')
-plt.scatter(X_test, Y_test, color = 'blue', label = 'displacement : mpg ')
-plt.xlabel('displacement')
-plt.ylabel('mpg')
+#x값의 변화에 따른 y값의 변화는 출력할 수 없으니까(여러개의 x - y) 그러므로 y값 예측 결과 - y값 측정 결과를 그래프로 표시
+plt.scatter(Y_test, y_pred,  color = 'blue', label = 'test : prediction')
+plt.plot([y.min(), y.max()], [y.min(), y.max()], color='red', linestyle='--')
+plt.xlabel('test')
+plt.ylabel('prediction')
 plt.legend()
 plt.show()
+
